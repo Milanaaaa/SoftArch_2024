@@ -16,6 +16,10 @@ class Message(BaseModel):
     timestamp: datetime = Field(default_factory=datetime.utcnow)
 
 
+class MessageSent(BaseModel):
+    text: str = Field(...)
+
+
 messages: List[Message] = []
 
 
@@ -25,8 +29,8 @@ async def get_messages():
 
 
 @app.post("/messages/send", response_model=Message)
-async def send_message(text: str):
-    message = Message(text=text)
+async def send_message(message_sent: MessageSent):
+    message = Message(text=message_sent.text)
 
     messages.append(message)
 
