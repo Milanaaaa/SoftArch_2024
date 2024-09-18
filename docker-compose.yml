@@ -1,0 +1,11 @@
+version: '3.8'
+
+services:
+  web:
+    restart: always
+    build:
+      context: .
+    ports:
+      - "8888:8000"
+    volumes:
+      - /server
