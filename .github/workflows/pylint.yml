@@ -4,7 +4,7 @@ on: [push, pull_request]
 
 jobs:
   lint:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
 
     strategy:
       matrix:
@@ -34,11 +34,11 @@ jobs:
         pylint **/*.py  # Run pylint on all Python files
   
   test:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
 
     strategy:
       matrix:
-        python-version: [3.10]  # Specify the versions of Python you want to test against
+        python-version: [3.10]
 
     steps:
     # Checkout the codebase
