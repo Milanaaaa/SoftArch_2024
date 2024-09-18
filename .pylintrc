@@ -6,5 +6,5 @@ disable=unused-import,
         too-few-public-methods,
         missing-module-docstring,
         missing-class-docstring,
-        missing-function-docstring
+        missing-function-docstring,
         use-dict-literal
