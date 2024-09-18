@@ -1,0 +1,9 @@
+[MESSAGES CONTROL]
+
+disable=unused-import,
+        subprocess-run-check,
+        line-too-long,
+        too-few-public-methods,
+        missing-module-docstring,
+        missing-class-docstring,
+        missing-function-docstring

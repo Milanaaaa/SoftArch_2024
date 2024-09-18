@@ -1,23 +1,65 @@
-name: Pylint
+name: Python Lint and Test
 
-on: [push]
+on: [push, pull_request]
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
+  lint:
+    runs-on: ubuntu-20.04
+
     strategy:
       matrix:
-        python-version: ["3.8", "3.9", "3.10"]
+        python-version: ["3.10"]  # Specify the versions of Python you want to test against
+
     steps:
-    - uses: actions/checkout@v4
+    # Checkout the codebase
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    # Set up Python environment
     - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v3
+      uses: actions/setup-python@v4
       with:
         python-version: ${{ matrix.python-version }}
+
+    # Install dependencies
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
         pip install pylint
-    - name: Analysing the code with pylint
+        pip install -r requirements.txt
+
+    # Run pylint to check code quality
+    - name: Run pylint
       run: |
-        pylint $(git ls-files '*.py')
+        pylint **/*.py  # Run pylint on all Python files
+  
+  test:
+    runs-on: ubuntu-20.04
+
+    strategy:
+      matrix:
+        python-version: ["3.10"]
+
+    steps:
+    # Checkout the codebase
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    # Set up Python environment
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ matrix.python-version }}
+
+    # Install dependencies
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+
+    # Run pylint to check code quality
+    - name: Run unittests
+      run: |
+        python -m unittest discover
+
+    
