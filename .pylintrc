@@ -7,3 +7,4 @@ disable=unused-import,
         missing-module-docstring,
         missing-class-docstring,
         missing-function-docstring
+        use-dict-literal
