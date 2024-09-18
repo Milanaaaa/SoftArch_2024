@@ -1,39 +1,38 @@
-import sys
 from time import sleep
+from typing import Any
 from threading import Thread
+from argparse import ArgumentParser
 from datetime import datetime, timezone
 
 from requests import Session
-
-CHAT_BASE_URL = 'http://127.0.0.1:8080'
-
-CHAT_UPDATE_DELAY = 0.1
+from requests.exceptions import ConnectionError
 
 
 class ChatAPI:
-    def __init__(self):
+    def __init__(self, chat_base_url: str):
+        self.chat_base_url = chat_base_url
         self.http = Session()
 
-    def get_messages(self):
+    def get_messages(self) -> list[dict[str, Any]]:
         return self.http.get(
-            CHAT_BASE_URL + '/messages'
+            self.chat_base_url + '/messages'
         ).json()
 
-    def send_message(self, text: str):
+    def send_message(self, text: str) -> dict[str, Any]:
         return self.http.post(
-            CHAT_BASE_URL + '/messages/send',
+            self.chat_base_url + '/messages/send',
             json={'text': text}
         ).json()
 
     def get_messages_count(self) -> int:
         return int(
             self.http.get(
-                CHAT_BASE_URL + '/messages/count'
+                self.chat_base_url + '/messages/count'
             ).text
         )
 
 
-def print_message(message: dict):
+def print_message(message: dict[str, Any]) -> None:
     ts = (datetime
           .fromisoformat(message['timestamp'])
           .replace(tzinfo=timezone.utc)
@@ -43,7 +42,7 @@ def print_message(message: dict):
     print(f"[{ts}] {message['text']}")
 
 
-def process_chat(chat: ChatAPI):
+def process_chat(chat: ChatAPI, update_delay: float = 0.5):
     lts = None
     while True:
         messages = chat.get_messages()
@@ -53,15 +52,24 @@ def process_chat(chat: ChatAPI):
                 print_message(message)
                 lts = message['timestamp']
 
-        sleep(CHAT_UPDATE_DELAY)
+        sleep(update_delay)
 
 
 def main():
-    chat = ChatAPI()
+    argp = ArgumentParser('Anonymous Chat')
+
+    argp.add_argument('-u', '--update-delay',
+                      type=float, default=0.5)
+    argp.add_argument('CHAT_SERVER_URL')
+
+    args = argp.parse_args()
+    update_delay, chat_server_url = args.update_delay, args.CHAT_SERVER_URL
+
+    chat = ChatAPI(chat_server_url)
 
     Thread(
         target=process_chat,
-        args=(chat,),
+        args=(chat, update_delay),
         daemon=True
     ).start()
 
@@ -83,3 +91,7 @@ if __name__ == '__main__':
         main()
     except KeyboardInterrupt:
         print('[*] Exited')
+    except ConnectionError:
+        print('[!] Connection error')
+    except Exception as e:
+        print(f'[!] Unknown error: {e}')
