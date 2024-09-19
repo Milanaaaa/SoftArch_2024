@@ -5,7 +5,6 @@ from argparse import ArgumentParser
 from datetime import datetime, timezone
 
 from requests import Session
-from requests.exceptions import ConnectionError
 
 
 class ChatAPI:

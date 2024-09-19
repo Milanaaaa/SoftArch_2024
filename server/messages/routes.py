@@ -2,7 +2,7 @@ from typing import List
 
 from fastapi import APIRouter
 
-from .schemas import *
+from .schemas import Message, MessageSent
 
 messages: List[Message] = []
 

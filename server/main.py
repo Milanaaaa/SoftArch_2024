@@ -1,8 +1,8 @@
 from fastapi import FastAPI
 
-from config import APP_META
+from .config import APP_META
 
-from messages import router as messages_router
+from .messages import router as messages_router
 
 app = FastAPI(**APP_META)
 

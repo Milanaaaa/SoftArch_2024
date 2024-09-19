@@ -1,30 +1,30 @@
 import unittest
-from unittest.mock import patch
+from time import time
+
 from fastapi.testclient import TestClient
-from server import app
+
 from client import ChatAPI
-import time
+from server.main import app
 
-class TestAPI(unittest.TestCase):
 
+class TestChat(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        cls.client = TestClient(app)
-        cls.api = ChatAPI()
+        cls.client = TestClient(app, base_url='http://testserver')
+
+        cls.api = ChatAPI('http://testserver')
         cls.api.http = cls.client
 
-    def test_hello_endpoint_speed(self):
-        start_time = time.time()
+    def test_response_time(self):
+        start_time = time()
 
         response = self.client.get("/messages/count")
 
-        end_time = time.time()
-
-        duration = end_time - start_time
+        duration = time() - start_time
 
         self.assertEqual(response.status_code, 200)
-
-        self.assertLess(duration, 0.5, f"Response took too long: {duration:.3f} seconds")
+        self.assertLess(duration, 0.5,
+                        f"Response took too long: {duration:.3f} seconds")
 
         print(f"Response time: {duration:.3f} seconds")
 
@@ -35,7 +35,7 @@ class TestAPI(unittest.TestCase):
         self.assertEqual(response, [])
 
     def test_send_message(self):
-        message_text = "Hello, world!"
+        message_text = 'Hello, world!'
         response = self.api.send_message(message_text)
 
         self.assertIsInstance(response, dict)
@@ -50,6 +50,6 @@ class TestAPI(unittest.TestCase):
 
         self.assertEqual(count, len(self.api.get_messages()))
 
+
 if __name__ == '__main__':
     unittest.main()
-
