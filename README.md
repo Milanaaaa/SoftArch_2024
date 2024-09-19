@@ -15,7 +15,7 @@ docker-compose up
 ### Client
 ```commandline
 python -m ensurepip --upgrade
-pip install requirements
+pip install requests
 python client.py http://localhost:8888
 ```
 
