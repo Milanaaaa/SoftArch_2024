@@ -24,9 +24,8 @@ jobs:
     # Install dependencies
     - name: Install dependencies
       run: |
-        apt-get update
-        apt-get install -y curl
-        curl -sSL https://install.python-poetry.org | python3 -
+        python -m pip install --upgrade pip
+        pip install poetry
         poetry install --no-root
 
     # Run pylint to check code quality
@@ -55,9 +54,8 @@ jobs:
     # Install dependencies
     - name: Install dependencies
       run: |
-        apt-get update
-        apt-get install -y curl
-        curl -sSL https://install.python-poetry.org | python3 -
+        python -m pip install --upgrade pip
+        pip install poetry
         poetry install --no-root
 
     # Run pylint to check code quality
